@@ -138,10 +138,7 @@ async function renderAppList() {
             return (a.appLabel || '').localeCompare(b.appLabel || '');
         });
 
-        if (filteredApps.length === 0) {
-            appList.innerHTML = '<div class="empty-list">No apps found</div>';
-            return;
-        }
+        document.getElementById('no-app').classList.toggle('hidden', filteredApps.length > 0);
 
         filteredApps.forEach(app => {
             const item = document.createElement('label');

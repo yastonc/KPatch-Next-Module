@@ -293,6 +293,7 @@ md-outlined-text-field {
 .empty-list {
     height: 100%;
     width: 100%;
+    padding-bottom: 72px;
     display: flex;
     align-items: center;
     justify-content: center;
