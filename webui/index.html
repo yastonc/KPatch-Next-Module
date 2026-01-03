@@ -23,7 +23,7 @@
                     <md-icon-button id="reboot-btn">
                         <md-icon><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960"><path d="M480-80q-83 0-156-31.5T197-197q-54-54-85.5-127T80-480q0-84 31.5-156.5T197-763l56 56q-44 44-68.5 102T160-480q0 134 93 227t227 93q134 0 227-93t93-227q0-67-24.5-125T707-707l56-56q54 54 85.5 126.5T880-480q0 83-31.5 156T763-197q-54 54-127 85.5T480-80Zm-40-360v-440h80v440h-80Z" /></svg></md-icon>
                     </md-icon-button>
-                    <md-menu id="reboot-menu" anchor="reboot-btn">
+                    <md-menu id="reboot-menu" anchor="reboot-btn" unresolved>
                         <md-menu-item id="reboot" data-reason="">Reboot</md-menu-item>
                         <md-menu-item id="reboot" data-reason="recovery">Reboot to Recovery</md-menu-item>
                         <md-menu-item id="reboot" data-reason="bootloader">Reboot to Bootloader</md-menu-item>
@@ -45,7 +45,7 @@
                                     d="M480-160q-33 0-56.5-23.5T400-240q0-33 23.5-56.5T480-320q33 0 56.5 23.5T560-240q0 33-23.5 56.5T480-160Zm0-240q-33 0-56.5-23.5T400-480q0-33 23.5-56.5T480-560q33 0 56.5 23.5T560-480q0 33-23.5 56.5T480-400Zm0-240q-33 0-56.5-23.5T400-720q0-33 23.5-56.5T480-800q33 0 56.5 23.5T560-720q0 33-23.5 56.5T480-640Z" />
                             </svg></md-icon>
                     </md-icon-button>
-                    <md-menu id="kpm-menu" anchor="kpm-menu-btn">
+                    <md-menu id="kpm-menu" anchor="kpm-menu-btn" unresolved>
                         <md-menu-item id="refresh-kpm-list-menu">Refresh</md-menu-item>
                     </md-menu>
                 </div>
@@ -64,7 +64,7 @@
                     <md-icon-button id="exclude-menu-btn">
                         <md-icon><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960"><path d="M480-160q-33 0-56.5-23.5T400-240q0-33 23.5-56.5T480-320q33 0 56.5 23.5T560-240q0 33-23.5 56.5T480-160Zm0-240q-33 0-56.5-23.5T400-480q0-33 23.5-56.5T480-560q33 0 56.5 23.5T560-480q0 33-23.5 56.5T480-400Zm0-240q-33 0-56.5-23.5T400-720q0-33 23.5-56.5T480-800q33 0 56.5 23.5T560-720q0 33-23.5 56.5T480-640Z"/></svg></md-icon>
                     </md-icon-button>
-                    <md-menu id="exclude-menu" anchor="exclude-menu-btn">
+                    <md-menu id="exclude-menu" anchor="exclude-menu-btn" unresolved>
                         <md-menu-item id="refresh-app-list">Refresh</md-menu-item>
                         <md-menu-item>
                             <label slot="headline" for="show-system-app">Show system app</label>
@@ -107,7 +107,7 @@
                     <div class="card info-card content-padding" id="info">
                         <div class="info">
                             <div slot="title">Kernel version</div>
-                            <div slot="detail" id="kernel"></div>
+                            <div slot="detail" id="kernel-release"></div>
                         </div>
                         <div class="info">
                             <div slot="title">System version</div>
@@ -127,7 +127,7 @@
             <!-- KPM -->
             <div id="kpm-page" class="page">
                 <div class="page-content">
-                    <div class="module-list content-padding" id="kpm-list"></div>
+                    <div class="module-list content-padding fab-padding" id="kpm-list"></div>
                     <div class="empty-list" id="no-module">No module loaded</div>
                 </div>
                 <md-fab variant="primary" aria-label="load" id="load">
@@ -154,13 +154,18 @@
             <!-- Patch/UnPatch -->
             <div id="patch-page" class="page">
                 <div class="page-content">
-                    <div class="card content-padding patch-only" id="kpimg">
+                    <div class="card content-padding patch-only animated animate-hidden" id="kpimg">
                         <div class="card-title" slot="headline">kpimg</div>
                         <div id="kpimg-version"></div>
                         <div id="kpimg-time"></div>
                         <div id="kpimg-config"></div>
                     </div>
-                    <div class="card content-padding" id="kernel">
+                    <div class="card content-padding animated animate-hidden" id="bootimg">
+                        <div class="card-title" slot="headline">bootimg</div>
+                        <div id="bootimg-slot"></div>
+                        <div id="bootimg-device"></div>
+                    </div>
+                    <div class="card content-padding animated animate-hidden" id="kernel">
                         <div class="card-title" slot="headline">Kernel</div>
                         <div id="kernel-info"></div>
                     </div>
@@ -173,6 +178,7 @@
                             </md-icon-button>
                         </md-outlined-text-field>
                     </div>
+                    <div class="module-list content-padding" id="kpm-embed-list"></div>
                     <div class="trailing-btn content-padding" id="patch-options">
                         <md-filled-button class="patch-only" id="embed">Embed KPM</md-filled-button>
                         <md-filled-button class="patch-only" id="start" disabled>Start</md-filled-button>
@@ -276,6 +282,27 @@
             <div slot="actions">
                 <md-text-button class="cancel">Cancel</md-text-button>
                 <md-text-button class="confirm">Unload</md-text-button>
+            </div>
+        </md-dialog>
+        <md-dialog class="text-field-dialog" id="kpm-option-dialog">
+            <div slot="headline">Control KPModule</div>
+            <div slot="content">
+                <md-outlined-select label="Trigger Event" id="kpm-event-select">
+                    <md-select-option value="paging-init">
+                        <div slot="headline">paging-init</div>
+                    </md-select-option>
+                    <md-select-option value="pre-kernel-init">
+                        <div slot="headline">pre-kernel-init</div>
+                    </md-select-option>
+                    <md-select-option value="post-kernel-init">
+                        <div slot="headline">post-kernel-init</div>
+                    </md-select-option>
+                </md-outlined-select>
+                <md-outlined-text-field label="Parameters" id="kpm-args-input"></md-outlined-text-field>
+            </div>
+            <div slot="actions">
+                <md-text-button class="cancel">Cancel</md-text-button>
+                <md-filled-button class="confirm">OK</md-filled-button>
             </div>
         </md-dialog>
     </div>

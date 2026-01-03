@@ -33,11 +33,14 @@ function switchPage(pageId, title, navId = null) {
     // Bottom Bar
     const isPrimary = navId !== null;
     document.querySelector('.bottom-bar').classList.toggle('hide', !isPrimary);
-    document.querySelector('.content').style.marginBottom = isPrimary ? '80px' : '0';
+    document.querySelector('.content').classList.toggle('no-bottom-bar', !isPrimary);
 
     if (isPrimary) {
         updateBottomBar(navId);
         setupExitBtn();
+        setTimeout(() => {
+            document.querySelectorAll('.animated').forEach(el => el.classList.add('animate-hidden'));
+        }, 200);
     } else {
         backBtn.style.display = 'inline-flex';
         backBtn.onclick = (e) => {
@@ -81,12 +84,12 @@ function navigateToSettings() {
 function navigateToPatch() {
     preparePatchUI('Patch', false);
     patchModule.getKpimgInfo();
-    patchModule.getKernelInfo();
+    patchModule.extractAndParseBootimg();
 }
 
 function navigateToUnPatch() {
     preparePatchUI('UnPatch', true);
-    patchModule.getKernelInfo();
+    patchModule.extractAndParseBootimg();
 }
 
 function updateBottomBar(activeId) {

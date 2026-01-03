@@ -58,7 +58,7 @@ function initInfo() {
             result.stdout = '6.18.2-linux\n16\nLinuxPC\nEnforcing'
         }
         const info = result.stdout.trim().split('\n');
-        document.getElementById('kernel').textContent = info[0];
+        document.getElementById('kernel-release').textContent = info[0];
         document.getElementById('system').textContent = info[1];
         document.getElementById('fingerprint').textContent = info[2];
         document.getElementById('selinux').textContent = info[3];
@@ -118,6 +118,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     // patch/unpatch
     const patchTextField = document.querySelector('#superkey md-outlined-text-field');
+    document.getElementById('embed').onclick = patchModule.embedKPM;
     document.getElementById('start').onclick = () => {
         document.querySelector('.trailing-btn').style.display = 'none';
         document.getElementById('patch-keyboard-inset').classList.add('hide');
