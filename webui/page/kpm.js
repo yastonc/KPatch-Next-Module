@@ -1,5 +1,5 @@
 import { exec, spawn, toast } from 'kernelsu-alt';
-import { modDir, persistDir, superkey } from '../index.js';
+import { modDir, persistDir, superkey, initInfo } from '../index.js';
 
 let allKpms = [];
 let searchQuery = '';
@@ -126,6 +126,7 @@ async function renderKpmList() {
             dialog.querySelector('.confirm').onclick = async () => {
                 await controlModule(module.name, textField.value);
                 refreshKpmList();
+                initInfo();
                 textField.value = '';
                 dialog.close();
             };
@@ -138,6 +139,7 @@ async function renderKpmList() {
             dialog.querySelector('.confirm').onclick = async () => {
                 await unloadModule(module.name);
                 refreshKpmList();
+                initInfo();
                 dialog.close();
             };
             dialog.show();

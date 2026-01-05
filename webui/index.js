@@ -63,7 +63,7 @@ function updateBtnState(value) {
     document.getElementById('start').disabled = !value;
 }
 
-function initInfo() {
+export function initInfo() {
     exec('uname -r && getprop ro.build.version.release && getprop ro.build.fingerprint && getenforce').then((result) => {
         if (import.meta.env.DEV) { // vite debug
             result.stdout = '6.18.2-linux\n16\nLinuxPC\nEnforcing'
