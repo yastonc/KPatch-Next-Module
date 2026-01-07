@@ -1,5 +1,5 @@
 import { exec, spawn, toast } from 'kernelsu-alt';
-import { modDir, persistDir, superkey, initInfo } from '../index.js';
+import { modDir, persistDir, superkey, initInfo, MAX_CHUNK_SIZE } from '../index.js';
 
 let allKpms = [];
 let searchQuery = '';
@@ -153,7 +153,7 @@ async function renderKpmList() {
 }
 
 async function uploadFile(file, targetPath, onProgress, signal) {
-    const CHUNK_SIZE = 256 * 1024; // 256KB chunks
+    const CHUNK_SIZE = file.size > MAX_CHUNK_SIZE * 4 ? MAX_CHUNK_SIZE : Math.max(1, Math.ceil(file.size / 4));
     const totalChunks = Math.ceil(file.size / CHUNK_SIZE);
     const CONCURRENCY = 8;
 
@@ -314,7 +314,7 @@ async function uploadAndLoadModule() {
                         toast(`Successfully loaded ${info.name}`);
                         refreshKpmList();
                         if (!checkbox.checked) { // Save module to load on boot automatically
-                             exec(`
+                            exec(`
                                 mkdir -p ${persistDir}/kpm
                                 cp -f "${modDir}/tmp/${file.name}" "${persistDir}/kpm/${info.name}.kpm"
                             `);
@@ -375,8 +375,6 @@ export function initKPMPage() {
     document.getElementById('refresh-kpm-list-menu').onclick = () => {
         refreshKpmList();
     };
-
-    refreshKpmList();
 }
 
 export { loadModule, refreshKpmList, uploadAndLoadModule, handleFileUpload, uploadFile }

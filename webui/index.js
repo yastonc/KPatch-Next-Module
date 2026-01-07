@@ -9,6 +9,7 @@ export const modDir = '/data/adb/modules/KPatch-Next';
 export const persistDir = '/data/adb/kp-next';
 
 export let superkey = localStorage.getItem('kp-next_superkey') || '';
+export let MAX_CHUNK_SIZE = 96 * 1024;
 
 async function updateStatus() {
     const version = await patchModule.getInstalledVersion();
@@ -64,7 +65,7 @@ function updateBtnState(value) {
 }
 
 export function initInfo() {
-    exec('uname -r && getprop ro.build.version.release && getprop ro.build.fingerprint && getenforce').then((result) => {
+    return exec('uname -r && getprop ro.build.version.release && getprop ro.build.fingerprint && getenforce').then((result) => {
         if (import.meta.env.DEV) { // vite debug
             result.stdout = '6.18.2-linux\n16\nLinuxPC\nEnforcing'
         }
@@ -82,6 +83,18 @@ async function reboot(reason = "") {
         await exec("/system/bin/input keyevent 26");
     }
     exec(`/system/bin/svc power reboot ${reason} || /system/bin/reboot ${reason}`);
+}
+
+function getMaxChunkSize() {
+    exec('getconf ARG_MAX').then((result) => {
+        try {
+            const max_arg = parseInt(result.stdout.trim());
+            if (!isNaN(max_arg)) {
+                // max_arg * 0.75 (base64 size increase) - command length
+                MAX_CHUNK_SIZE = Math.floor(max_arg * 0.75) - 1024;
+            }
+        } catch (e) { }
+    });
 }
 
 document.addEventListener('DOMContentLoaded', async () => {
@@ -169,9 +182,8 @@ document.addEventListener('DOMContentLoaded', async () => {
         kpmModule.refreshKpmList();
     }
 
-    updateStatus();
     updateBtnState(superkey);
-    initInfo();
+    getMaxChunkSize();
     excludeModule.initExcludePage();
     kpmModule.initKPMPage();
 
