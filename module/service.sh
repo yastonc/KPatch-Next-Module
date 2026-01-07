@@ -13,7 +13,7 @@ fi
 
 for kpm in $KPNDIR/kpm/*.kpm; do
     [ -s "$kpm" ] || continue
-    kpatch "$key" kpm load "$kpm"
+    kpatch "$key" kpm load "$kpm" || rm -f "$kpm"
 done
 
 until [ "$(getprop sys.boot_completed)" = "1" ]; do
