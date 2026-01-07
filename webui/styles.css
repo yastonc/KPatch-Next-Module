@@ -22,23 +22,28 @@ body {
     z-index: 99;
     opacity: 1;
     transition: opacity 0.3s ease;
-
-    svg {
-        width: min(50vw, 360px);
-        height: auto;
-        fill: var(--md-sys-color-on-surface);
-        opacity: 0;
-        transition: opacity 0.05s ease;
-    }
-}
-
-.splash.show svg {
-    opacity: 1;
 }
 
 .splash.exit {
     opacity: 0;
     pointer-events: none;
+}
+
+.splash-icon {
+    border-radius: 50%;
+    background-color: white;
+    transition: opacity 0.05s ease;
+    opacity: 0;
+
+    svg {
+        width: min(45vw, 240px);
+        height: auto;
+        fill: black;
+    }
+}
+
+.splash-icon.show {
+    opacity: 1;
 }
 
 .root_layout {

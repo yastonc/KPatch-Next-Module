@@ -100,7 +100,7 @@ function getMaxChunkSize() {
 document.addEventListener('DOMContentLoaded', async () => {
     document.querySelectorAll('[unresolved]').forEach(el => el.removeAttribute('unresolved'));
     const splash = document.getElementById('splash');
-    if (splash) setTimeout(() => splash.classList.add('show'), 20);
+    if (splash) setTimeout(() => splash.querySelector('.splash-icon').classList.add('show'), 20);
 
     setupRoute();
 
